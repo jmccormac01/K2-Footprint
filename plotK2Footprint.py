@@ -35,4 +35,5 @@ plt.xlabel('Right Ascension')
 plt.ylabel('Declination')
 plt.ylim(-90, 50)
 plt.xlim(0,360)
-plt.show()
+plt.savefig('K2Footprint.png',dpi=200)
+

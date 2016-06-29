@@ -6,10 +6,9 @@ Code to plot the K2 mission footprint
 Code Example
 ------------
 
-```python
 python plotK2Footprint.py
-```
-.. image:: K2_Footprint.png
+
+.. image:: K2Footprint.png
 
 Motivation
 ----------
@@ -19,9 +18,7 @@ I needed to make an HTML canvas overlay for the NGTS field selection. We do not 
 Installation
 ------------
 
-```
 git clone https://github.com/jmccormac01/K2-Footprint.git
-```
 
 API Reference
 -------------
