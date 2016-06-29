@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <style type='text/css'>
+        canvas {
+            border: 1px solid black;
+        }
+        </style>
+    </head>
+    <body>
+        <canvas id='myCanvas' width="772" height="412">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script>
+            var canvas = document.getElementById('myCanvas');
+            var context = canvas.getContext('2d');
+            var stroke_colour = 'black';
+            context.lineWidth = 0.2;
+            context.strokeStyle = stroke_colour;
+
+            var ra_scale = 1.9832;
+            var dec_scale = -3.0;
+            var axis_offset_x = 40;
+            var axis_offset_y = 0;
+            var dec_abs_offset = 30;
+            var zenith_line_offset = 12.5;
+
+            var k2json = $.getJSON('K2_fields.json')
+            k2json.done(function(k2data){
+                var k2json_new = $.getJSON('K2_fields_new.json')
+                k2json_new.done(function(k2datanew){
+                    // loop over the current fields
+                    for (var campaign in k2data){
+                        // show K2 field status via colour
+                        var start = new Date(k2data[campaign]['start']);
+                        var stop = new Date(k2data[campaign]['stop']);
+                        var now = new Date();
+                        if (now < start){
+                            stroke_colour = 'black';
+                        } else if (now > stop){
+                            stroke_colour = 'red';
+                        } else {
+                            stroke_colour = 'green';
+                        }
+                        context.strokeStyle=stroke_colour;
+
+                        for (var channel in k2data[campaign]){
+                            for (var channels in k2data[campaign][channel]){
+                                var corners_ra = k2data[campaign][channel][channels]['corners_ra'];
+                                var corners_dec = k2data[campaign][channel][channels]['corners_dec'];
+                                if (corners_ra !== undefined && corners_dec !== undefined){
+                                    context.beginPath();
+                                    context.moveTo(corners_ra[0]*ra_scale+zenith_line_offset+axis_offset_x,
+                                                   (corners_dec[0]-dec_abs_offset)*dec_scale-axis_offset_y);
+                                    for (var i=1;i<corners_ra.length;i++){
+                                        context.lineTo(corners_ra[i]*ra_scale+zenith_line_offset+axis_offset_x,
+                                                       (corners_dec[i]-dec_abs_offset)*dec_scale-axis_offset_y);
+                                    }
+                                    context.lineTo(corners_ra[0]*ra_scale+zenith_line_offset+axis_offset_x,
+                                                   (corners_dec[0]-dec_abs_offset)*dec_scale-axis_offset_y);
+                                    context.stroke();
+                                }
+                            }
+                        }
+                    }
+                    // loop over the new fields
+                    for (var campaign_n in k2datanew){
+                        // these fields are blue as they have not been confirmed yet
+                        context.strokeStyle='blue';
+                        for (var channel_n in k2datanew[campaign_n]){
+                            for (var channels_n in k2datanew[campaign_n][channel_n]){
+                                var corners_ra_n = k2datanew[campaign_n][channel_n][channels_n]['corners_ra'];
+                                var corners_dec_n = k2datanew[campaign_n][channel_n][channels_n]['corners_dec'];
+                                if (corners_ra_n !== undefined && corners_dec_n !== undefined){
+                                    context.beginPath();
+                                    context.moveTo(corners_ra_n[0]*ra_scale+zenith_line_offset+axis_offset_x,
+                                                   (corners_dec_n[0]-dec_abs_offset)*dec_scale-axis_offset_y);
+                                    for (var i=1;i<corners_ra_n.length;i++){
+                                        context.lineTo(corners_ra_n[i]*ra_scale+zenith_line_offset+axis_offset_x,
+                                                       (corners_dec_n[i]-dec_abs_offset)*dec_scale-axis_offset_y);
+                                    }
+                                    context.lineTo(corners_ra_n[0]*ra_scale+zenith_line_offset+axis_offset_x,
+                                                   (corners_dec_n[0]-dec_abs_offset)*dec_scale-axis_offset_y);
+                                    context.stroke();
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
