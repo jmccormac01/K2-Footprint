@@ -7,7 +7,7 @@ Code to plot the K2 mission footprint
 ```python
 python plotK2Footprint.py
 ```
-[Footprint PNG](K2_Footprint.png)
+[](https://github.com/jmccormac01/K2-Footprint/blob/master/K2_Footprint.png)
 
 ## Motivation
 
